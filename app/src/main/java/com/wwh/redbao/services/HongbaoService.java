@@ -42,7 +42,7 @@ public class HongbaoService extends AccessibilityService
 
     private PowerUtil powerUtil;
     private SharedPreferences sharedPreferences;
-    private static final int TIME = 1000;
+    private static int TIME = 1000;
     Handler mHandler = new Handler() {
         public void handleMessage(Message msg) {
             switch (msg.what) {
@@ -72,6 +72,11 @@ public class HongbaoService extends AccessibilityService
                 return;
             if (sharedPreferences.getBoolean("pref_watch_list", false) && watchList(event))
                 return;
+        }
+        try {
+            TIME = Integer.parseInt(sharedPreferences.getString("pref_watch_exclude_delay", "1000"));
+        } catch (Exception e) {
+            TIME = 1000;
         }
 
         if (sharedPreferences.getBoolean("pref_watch_chat", false))

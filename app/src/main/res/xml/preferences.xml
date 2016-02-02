@@ -34,6 +34,11 @@
                 android:title="屏蔽红包文字"
                 android:summary="@string/pref_watch_exclude_words_summary"
                 android:layout="@layout/preference_checkbox"/>
+        <EditTextPreference
+            android:key="pref_watch_exclude_delay"
+            android:title="延迟时间"
+            android:summary="延迟时间"
+            android:layout="@layout/preference_checkbox"/>
     </PreferenceCategory>
     <PreferenceCategory
             android:title="辅助功能"
