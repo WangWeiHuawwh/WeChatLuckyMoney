@@ -1,4 +1,4 @@
-package xyz.monkeytong.hongbao.utils;
+package com.wwh.redbao.utils;
 
 import android.content.Context;
 import android.content.Intent;
@@ -6,15 +6,13 @@ import android.content.pm.PackageInfo;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.widget.Toast;
+import com.wwh.redbao.R;
 import org.apache.http.HttpResponse;
 import org.apache.http.StatusLine;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONObject;
-import xyz.monkeytong.hongbao.R;
-import xyz.monkeytong.hongbao.activities.SettingsActivity;
-import xyz.monkeytong.hongbao.activities.WebViewActivity;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;

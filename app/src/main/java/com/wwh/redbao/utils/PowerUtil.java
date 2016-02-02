@@ -1,4 +1,4 @@
-package xyz.monkeytong.hongbao.utils;
+package com.wwh.redbao.utils;
 
 import android.app.KeyguardManager;
 import android.content.Context;

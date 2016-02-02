@@ -1,4 +1,4 @@
-package xyz.monkeytong.hongbao.activities;
+package com.wwh.redbao.activities;
 
 import android.accessibilityservice.AccessibilityServiceInfo;
 import android.annotation.TargetApi;
@@ -14,11 +14,8 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.view.accessibility.AccessibilityManager;
 import android.widget.Button;
-import xyz.monkeytong.hongbao.R;
-import xyz.monkeytong.hongbao.utils.ConnectivityUtil;
-import xyz.monkeytong.hongbao.utils.UpdateTask;
+import com.wwh.redbao.R;
 
-import java.lang.reflect.Method;
 import java.util.List;
 
 
@@ -68,9 +65,8 @@ public class MainActivity extends Activity {
     protected void onResume() {
         super.onResume();
         updateServiceStatus();
-
         // Check for update when WIFI is connected or on first time.
-        if (ConnectivityUtil.isWifi(this) || UpdateTask.count == 0) new UpdateTask(this, false).update();
+        //if (ConnectivityUtil.isWifi(this) || UpdateTask.count == 0) new UpdateTask(this, false).update();
     }
 
     @Override

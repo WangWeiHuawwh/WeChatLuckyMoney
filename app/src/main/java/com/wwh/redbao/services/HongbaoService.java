@@ -1,4 +1,4 @@
-package xyz.monkeytong.hongbao.services;
+package com.wwh.redbao.services;
 
 import android.accessibilityservice.AccessibilityService;
 import android.app.Notification;
@@ -7,18 +7,21 @@ import android.content.ComponentName;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Rect;
+import android.os.Handler;
+import android.os.Message;
 import android.os.Parcelable;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
-import xyz.monkeytong.hongbao.utils.HongbaoSignature;
-import xyz.monkeytong.hongbao.utils.PowerUtil;
+import com.wwh.redbao.utils.HongbaoSignature;
+import com.wwh.redbao.utils.PowerUtil;
 
 import java.util.List;
 
 
-public class HongbaoService extends AccessibilityService implements SharedPreferences.OnSharedPreferenceChangeListener {
+public class HongbaoService extends AccessibilityService
+        implements SharedPreferences.OnSharedPreferenceChangeListener {
     private static final String WECHAT_DETAILS_EN = "Details";
     private static final String WECHAT_DETAILS_CH = "红包详情";
     private static final String WECHAT_BETTER_LUCK_EN = "Better luck next time!";
@@ -39,6 +42,17 @@ public class HongbaoService extends AccessibilityService implements SharedPrefer
 
     private PowerUtil powerUtil;
     private SharedPreferences sharedPreferences;
+    private static final int TIME = 1000;
+    Handler mHandler = new Handler() {
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+                case 1:
+                    AccessibilityNodeInfo cellNode = (AccessibilityNodeInfo) msg.obj;
+                    cellNode.performAction(AccessibilityNodeInfo.ACTION_CLICK);
+                    break;
+            }
+        }
+    };
 
     /**
      * AccessibilityEvent的回调方法
@@ -47,23 +61,28 @@ public class HongbaoService extends AccessibilityService implements SharedPrefer
      */
     @Override
     public void onAccessibilityEvent(AccessibilityEvent event) {
-        if (sharedPreferences == null) return;
+        if (sharedPreferences == null)
+            return;
 
         setCurrentActivityName(event);
 
         /* 检测通知消息 */
         if (!mMutex) {
-            if (sharedPreferences.getBoolean("pref_watch_notification", false) && watchNotifications(event)) return;
-            if (sharedPreferences.getBoolean("pref_watch_list", false) && watchList(event)) return;
+            if (sharedPreferences.getBoolean("pref_watch_notification", false) && watchNotifications(event))
+                return;
+            if (sharedPreferences.getBoolean("pref_watch_list", false) && watchList(event))
+                return;
         }
 
-        if (sharedPreferences.getBoolean("pref_watch_chat", false)) watchChat(event);
+        if (sharedPreferences.getBoolean("pref_watch_chat", false))
+            watchChat(event);
     }
 
     private void watchChat(AccessibilityEvent event) {
         this.rootNodeInfo = getRootInActiveWindow();
 
-        if (rootNodeInfo == null) return;
+        if (rootNodeInfo == null)
+            return;
 
         mReceiveNode = null;
         mUnpackNode = null;
@@ -82,7 +101,11 @@ public class HongbaoService extends AccessibilityService implements SharedPrefer
         /* 如果戳开但还未领取 */
         if (mNeedUnpack && (mUnpackNode != null)) {
             AccessibilityNodeInfo cellNode = mUnpackNode;
-            cellNode.performAction(AccessibilityNodeInfo.ACTION_CLICK);
+            //进行延迟拆红包
+            Message msg = new Message();
+            msg.obj = cellNode;
+            msg.what = 1;
+            mHandler.sendMessageDelayed(msg, TIME);
             mNeedUnpack = false;
         }
     }
@@ -130,7 +153,8 @@ public class HongbaoService extends AccessibilityService implements SharedPrefer
 
         // Not a hongbao
         String tip = event.getText().toString();
-        if (!tip.contains(WECHAT_NOTIFICATION_TIP)) return true;
+        if (!tip.contains(WECHAT_NOTIFICATION_TIP))
+            return true;
 
         Parcelable parcelable = event.getParcelableData();
         if (parcelable instanceof Notification) {
@@ -156,7 +180,8 @@ public class HongbaoService extends AccessibilityService implements SharedPrefer
      * 检查节点信息
      */
     private void checkNodeInfo(int eventType) {
-        if (this.rootNodeInfo == null) return;
+        if (this.rootNodeInfo == null)
+            return;
 
         /* 聊天会话窗口，遍历节点匹配“领取红包”和"查看红包" */
         AccessibilityNodeInfo node1 = (sharedPreferences.getBoolean("pref_watch_self", false)) ?
@@ -195,11 +220,13 @@ public class HongbaoService extends AccessibilityService implements SharedPrefer
 
     private boolean hasOneOfThoseNodes(String... texts) {
         for (String text : texts) {
-            if (text == null) continue;
+            if (text == null)
+                continue;
 
             List<AccessibilityNodeInfo> nodes = this.rootNodeInfo.findAccessibilityNodeInfosByText(text);
 
-            if (!nodes.isEmpty()) return true;
+            if (!nodes.isEmpty())
+                return true;
         }
         return false;
     }
@@ -209,7 +236,8 @@ public class HongbaoService extends AccessibilityService implements SharedPrefer
         AccessibilityNodeInfo lastNode = null;
 
         for (String text : texts) {
-            if (text == null) continue;
+            if (text == null)
+                continue;
 
             List<AccessibilityNodeInfo> nodes = this.rootNodeInfo.findAccessibilityNodeInfosByText(text);
 

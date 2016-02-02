@@ -1,8 +1,7 @@
-package xyz.monkeytong.hongbao.activities;
+package com.wwh.redbao.activities;
 
 import android.annotation.TargetApi;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.Preference;
@@ -12,8 +11,8 @@ import android.provider.Settings;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import xyz.monkeytong.hongbao.R;
-import xyz.monkeytong.hongbao.utils.UpdateTask;
+import com.wwh.redbao.R;
+import com.wwh.redbao.utils.UpdateTask;
 
 /**
  * Created by Zhongyi on 1/19/16.
