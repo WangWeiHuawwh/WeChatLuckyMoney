@@ -43,12 +43,14 @@ public class HongbaoService extends AccessibilityService
     private PowerUtil powerUtil;
     private SharedPreferences sharedPreferences;
     private static int TIME = 1000;
+    private boolean isWaiting = false;
     Handler mHandler = new Handler() {
         public void handleMessage(Message msg) {
             switch (msg.what) {
                 case 1:
                     AccessibilityNodeInfo cellNode = (AccessibilityNodeInfo) msg.obj;
                     cellNode.performAction(AccessibilityNodeInfo.ACTION_CLICK);
+                    isWaiting = false;
                     break;
             }
         }
@@ -63,6 +65,10 @@ public class HongbaoService extends AccessibilityService
     public void onAccessibilityEvent(AccessibilityEvent event) {
         if (sharedPreferences == null)
             return;
+        //判断是否在等待期间
+        if (isWaiting) {
+            return;
+        }
 
         setCurrentActivityName(event);
 
@@ -106,6 +112,8 @@ public class HongbaoService extends AccessibilityService
         /* 如果戳开但还未领取 */
         if (mNeedUnpack && (mUnpackNode != null)) {
             AccessibilityNodeInfo cellNode = mUnpackNode;
+            //进入等待状态
+            isWaiting = true;
             //进行延迟拆红包
             Message msg = new Message();
             msg.obj = cellNode;
